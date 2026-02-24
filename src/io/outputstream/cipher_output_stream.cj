@@ -5,6 +5,7 @@ package zip4cj.io.outputstream
 
 abstract class ICipherOutputStream <: OutputStream & Resource {
 
+    public open func get123(): String 
     public func write(b: Array<UInt8>): Unit
 
     public func writeHeaders(b: Array<UInt8>): Unit

@@ -25,3 +25,6 @@ internal import zip4cj.model.enums.*
 internal import zip4cj.util.internals.*
 // internal import charset4cj.charset.*
 // internal import charset4cj.charset.encoding.*
+internal import std.random.*
+
+let random = Random()

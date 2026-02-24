@@ -26,8 +26,8 @@
     git = "https://gitcode.com/Cangjie-TPC/zlib4cj.git"
     branch = "v1.2.0"
 [package]
-  cjc-version = "1.0.4"
-  compile-option = "-O2 -Woff all"
+  cjc-version = "1.0.5"
+  compile-option = "-O2 -Woff all --dump-chir --fno-chir-devirtualization"
   description = "nothing here"
   link-option = ""
   name = "zip4cj"

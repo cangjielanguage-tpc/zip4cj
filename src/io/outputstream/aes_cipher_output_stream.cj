@@ -7,6 +7,10 @@ class AesCipherOutputStream <: CipherOutputStream<AESEncrypter> {
 
     private var pendingBuffer = Array<Byte>(InternalZipConstants.AES_BLOCK_SIZE, repeat: 0)
     private var pendingBufferLength = 0
+    var rrr = random.nextInt64()
+    public func get123(): String {
+        return "AesCipherOutputStream: ${rrr}"
+    }
 
     public init(outputStream: ZipEntryOutputStream,
                 zipParameters: ZipParameters,

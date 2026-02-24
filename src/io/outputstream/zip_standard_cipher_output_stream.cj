@@ -7,6 +7,16 @@ class ZipStandardCipherOutputStream <: CipherOutputStream<StandardEncrypter> {
     private var pendingBuffer: Array<UInt8> = Array<UInt8>(16, repeat: 0)
 
     private var pendingBufferLength: Int32 = 0
+    var rrr = random.nextInt64()
+    public func get123(): String {
+        Exception("ZipStandardCipherOutputStream getClassName ${rrr}").printStackTrace()
+        return "ZipStandardCipherOutputStream: ${rrr}"
+    }
+
+    public func getClassName1(): String {
+        Exception("ZipStandardCipherOutputStream getClassName1 ${rrr}").printStackTrace()
+        return "ZipStandardCipherOutputStream: ${rrr}"
+    }
 
     public init(
         outputStream: ZipEntryOutputStream,
@@ -32,6 +42,7 @@ class ZipStandardCipherOutputStream <: CipherOutputStream<StandardEncrypter> {
     }
 
     public func write(b: Array<UInt8>): Unit {
+        println("b: ${b}")
         super.write(b)
     }
 

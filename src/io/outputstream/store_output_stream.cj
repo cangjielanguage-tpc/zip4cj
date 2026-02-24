@@ -4,7 +4,15 @@
 package zip4cj.io.outputstream
 
 class StoreOutputStream <: CompressedOutputStream {
-    public init(cipherOutputStream: ICipherOutputStream) {
+    public init(cipherOutputStream: NoCipherOutputStream) {
         super(cipherOutputStream)
+    }
+
+    public init(cipherOutputStream: AesCipherOutputStream) {
+        super(cipherOutputStream)
+    }
+    public init(cipherOutputStream: ZipStandardCipherOutputStream) {
+        super(cipherOutputStream)
+        println("----------5: ${cipherOutputStream.get123()}")
     }
 }

@@ -1,0 +1,116 @@
+[02-24 16:51:00] INFO - The CJC compiler has been configured.
+[02-24 16:51:00] INFO - Cangjie Compiler: 1.1.0-alpha.20260224010001 (cjnative)
+Target: x86_64-unknown-linux-gnu
+
+[02-24 16:51:00] INFO - 仓颉版本:1.1.0, 需要检查stdx是否配置
+[02-24 16:51:00] INFO - 当前环境变量已经设置仓颉, 检查CANGJIE_HOME中是否存在stdx
+[02-24 16:51:00] INFO - set cangjie stdx success.
+[02-24 16:51:00] INFO - start clear
+[02-24 16:51:00] INFO - end clear
+[02-24 16:51:00] INFO - CMD    : cjc  --import-path /home/lyq/workspace/zip4cj/target/release --import-path /home/lyq/cangjie_env/1.1.0/linux_x86_64_llvm/dynamic  -L /home/lyq/workspace/zip4cj/target/release/zip4cj -L /home/lyq/workspace/zip4cj/target/release/zlib4cj -L /home/lyq/cangjie_env/1.1.0/linux_x86_64_llvm/dynamic/stdx -l stdx.syntax -l stdx.unittest.data -l stdx.net.tlsFFI -l cangjie-dynamicLoader-opensslFFI -l stdx.crypto.crypto -l stdx.unittest -l stdx.log -l stdx.encoding.url -l stdx.crypto.keysFFI -l stdx -l stdx.crypto.x509 -l stdx.string_intern -l stdx.actors -l boundscheck -l stdx.crypto.keys -l stdx.net.tls -l stdx.encoding -l stdx.crypto -l stdx.logger -l stdx.net.http -l stdx.crypto.common -l stdx.compress.zlib -l stdx.encoding.base64 -l stdx.aspectCJ -l stdx.net.tls.common -l stdx.serialization.serialization -l stdx.compress -l stdx.compress.tar -l -macro_stdx.actors.macros -l stdx.serialization -l stdx.crypto.x509FFI -l stdx.syntaxFFI -l stdx.fuzz -l stdx.encoding.json.stream -l stdx.chir -l stdx.crypto.kit -l stdx.encoding.json -l stdx.encoding.hex -l stdx.net -l stdx.effect -l stdx.crypto.digest -l zip4cj.util.internals -l zip4cj.crypto -l zip4cj.tasks -l zip4cj -l zip4cj.io.inputstream -l zip4cj.progress -l zip4cj.model.enums -l zip4cj.util -l zip4cj.model -l zip4cj.headers -l zip4cj.crypto.PBKDF2 -l zip4cj.io -l zlib4cj -l zip4cj.io.outputstream -l zip4cj.crypto.engine -l zip4cj.exception  test_zipFile_24.cj -O0 -Woff all
+[02-24 16:51:01] INFO - CMD    : ./main
+[02-24 16:51:01] INFO - An exception has occurred:
+[02-24 16:51:01] INFO - Exception: ZipStandardCipherOutputStream getClassName -8613499875754022952
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipStandardCipherOutputStream::get123()(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_standard_cipher_output_stream.cj:12)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::initializeCompressedOutputStream(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:165)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::putNextEntry(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:57)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AbstractAddFileToZipTask<...>::addFilesToZip(std.collection::ArrayList<...>, zip4cj.progress::ProgressMonitor, zip4cj.model::ZipParameters, zip4cj.model::Zip4cjConfig)(/home/lyq/workspace/zip4cj/src/tasks/abstract_add_file_to_zip_task.cj:64)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AddFilesToZipTask::executeTask(zip4cj.tasks::AddFilesToZipTaskParameters, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/add_files_to_zip_task.cj:19)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::performTaskWithErrorHandling(T0, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:108)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::execute(T0)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:102)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFiles(std.core::Array<...>, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:206)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFile(std.core::String, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:172)
+[02-24 16:51:01] INFO - at default::main()(/home/lyq/workspace/zip4cj/test_temp/run/test_zipFile_24_cj_/test_zipFile_24.cj:18)
+[02-24 16:51:01] INFO - An exception has occurred:
+[02-24 16:51:01] INFO - Exception: ZipStandardCipherOutputStream getClassName -8613499875754022952
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipStandardCipherOutputStream::get123()(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_standard_cipher_output_stream.cj:12)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::initializeCompressedOutputStream(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:166)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::putNextEntry(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:57)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AbstractAddFileToZipTask<...>::addFilesToZip(std.collection::ArrayList<...>, zip4cj.progress::ProgressMonitor, zip4cj.model::ZipParameters, zip4cj.model::Zip4cjConfig)(/home/lyq/workspace/zip4cj/src/tasks/abstract_add_file_to_zip_task.cj:64)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AddFilesToZipTask::executeTask(zip4cj.tasks::AddFilesToZipTaskParameters, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/add_files_to_zip_task.cj:19)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::performTaskWithErrorHandling(T0, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:108)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::execute(T0)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:102)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFiles(std.core::Array<...>, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:206)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFile(std.core::String, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:172)
+[02-24 16:51:01] INFO - at default::main()(/home/lyq/workspace/zip4cj/test_temp/run/test_zipFile_24_cj_/test_zipFile_24.cj:18)
+[02-24 16:51:01] INFO - An exception has occurred:
+[02-24 16:51:01] INFO - Exception: ZipStandardCipherOutputStream getClassName -8613499875754022952
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipStandardCipherOutputStream::get123()(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_standard_cipher_output_stream.cj:12)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::initializeCompressedOutputStream(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:168)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::putNextEntry(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:57)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AbstractAddFileToZipTask<...>::addFilesToZip(std.collection::ArrayList<...>, zip4cj.progress::ProgressMonitor, zip4cj.model::ZipParameters, zip4cj.model::Zip4cjConfig)(/home/lyq/workspace/zip4cj/src/tasks/abstract_add_file_to_zip_task.cj:64)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AddFilesToZipTask::executeTask(zip4cj.tasks::AddFilesToZipTaskParameters, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/add_files_to_zip_task.cj:19)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::performTaskWithErrorHandling(T0, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:108)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::execute(T0)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:102)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFiles(std.core::Array<...>, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:206)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFile(std.core::String, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:172)
+[02-24 16:51:01] INFO - at default::main()(/home/lyq/workspace/zip4cj/test_temp/run/test_zipFile_24_cj_/test_zipFile_24.cj:18)
+[02-24 16:51:01] INFO - An exception has occurred:
+[02-24 16:51:01] INFO - Exception: ZipStandardCipherOutputStream getClassName -8613499875754022952
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipStandardCipherOutputStream::get123()(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_standard_cipher_output_stream.cj:12)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::initializeCompressedOutputStream(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:172)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::putNextEntry(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:57)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AbstractAddFileToZipTask<...>::addFilesToZip(std.collection::ArrayList<...>, zip4cj.progress::ProgressMonitor, zip4cj.model::ZipParameters, zip4cj.model::Zip4cjConfig)(/home/lyq/workspace/zip4cj/src/tasks/abstract_add_file_to_zip_task.cj:64)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AddFilesToZipTask::executeTask(zip4cj.tasks::AddFilesToZipTaskParameters, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/add_files_to_zip_task.cj:19)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::performTaskWithErrorHandling(T0, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:108)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::execute(T0)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:102)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFiles(std.core::Array<...>, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:206)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFile(std.core::String, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:172)
+[02-24 16:51:01] INFO - at default::main()(/home/lyq/workspace/zip4cj/test_temp/run/test_zipFile_24_cj_/test_zipFile_24.cj:18)
+[02-24 16:51:01] INFO - An exception has occurred:
+[02-24 16:51:01] INFO - Exception: ZipStandardCipherOutputStream getClassName -8613499875754022952
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipStandardCipherOutputStream::get123()(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_standard_cipher_output_stream.cj:12)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::CompressedOutputStream::init(zip4cj.io.outputstream::ICipherOutputStream)(/home/lyq/workspace/zip4cj/src/io/outputstream/compressed_output_stream.cj:11)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::initializeCompressedOutputStream(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:178)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::putNextEntry(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:57)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AbstractAddFileToZipTask<...>::addFilesToZip(std.collection::ArrayList<...>, zip4cj.progress::ProgressMonitor, zip4cj.model::ZipParameters, zip4cj.model::Zip4cjConfig)(/home/lyq/workspace/zip4cj/src/tasks/abstract_add_file_to_zip_task.cj:64)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AddFilesToZipTask::executeTask(zip4cj.tasks::AddFilesToZipTaskParameters, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/add_files_to_zip_task.cj:19)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::performTaskWithErrorHandling(T0, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:108)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::execute(T0)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:102)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFiles(std.core::Array<...>, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:206)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFile(std.core::String, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:172)
+[02-24 16:51:01] INFO - at default::main()(/home/lyq/workspace/zip4cj/test_temp/run/test_zipFile_24_cj_/test_zipFile_24.cj:18)
+[02-24 16:51:01] INFO - An exception has occurred:
+[02-24 16:51:01] INFO - Exception: ZipStandardCipherOutputStream getClassName -8613499875754022952
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipStandardCipherOutputStream::get123()(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_standard_cipher_output_stream.cj:12)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::initializeCompressedOutputStream(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:178)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::putNextEntry(zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:57)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AbstractAddFileToZipTask<...>::addFilesToZip(std.collection::ArrayList<...>, zip4cj.progress::ProgressMonitor, zip4cj.model::ZipParameters, zip4cj.model::Zip4cjConfig)(/home/lyq/workspace/zip4cj/src/tasks/abstract_add_file_to_zip_task.cj:64)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AddFilesToZipTask::executeTask(zip4cj.tasks::AddFilesToZipTaskParameters, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/add_files_to_zip_task.cj:19)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::performTaskWithErrorHandling(T0, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:108)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::execute(T0)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:102)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFiles(std.core::Array<...>, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:206)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFile(std.core::String, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:172)
+[02-24 16:51:01] INFO - at default::main()(/home/lyq/workspace/zip4cj/test_temp/run/test_zipFile_24_cj_/test_zipFile_24.cj:18)
+[02-24 16:51:01] INFO - An exception has occurred:
+[02-24 16:51:01] INFO - Exception: ZipStandardCipherOutputStream getClassName -8613499875754022952
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipStandardCipherOutputStream::get123()(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_standard_cipher_output_stream.cj:12)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::CompressedOutputStream::write(std.core::Array<...>)(/home/lyq/workspace/zip4cj/src/io/outputstream/compressed_output_stream.cj:15)
+[02-24 16:51:01] INFO - at zip4cj.io.outputstream::ZipOutputStream::write(std.core::Array<...>)(/home/lyq/workspace/zip4cj/src/io/outputstream/zip_output_stream.cj:73)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AbstractAddFileToZipTask<...>::addFilesToZip(std.collection::ArrayList<...>, zip4cj.progress::ProgressMonitor, zip4cj.model::ZipParameters, zip4cj.model::Zip4cjConfig)(/home/lyq/workspace/zip4cj/src/tasks/abstract_add_file_to_zip_task.cj:64)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AddFilesToZipTask::executeTask(zip4cj.tasks::AddFilesToZipTaskParameters, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/add_files_to_zip_task.cj:19)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::performTaskWithErrorHandling(T0, zip4cj.progress::ProgressMonitor)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:108)
+[02-24 16:51:01] INFO - at zip4cj.tasks::AsyncZipTask<...>::execute(T0)(/home/lyq/workspace/zip4cj/src/tasks/async_zip_task.cj:102)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFiles(std.core::Array<...>, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:206)
+[02-24 16:51:01] INFO - at zip4cj::ZipFile::addFile(std.core::String, zip4cj.model::ZipParameters)(/home/lyq/workspace/zip4cj/src/zip_file.cj:172)
+[02-24 16:51:01] INFO - at default::main()(/home/lyq/workspace/zip4cj/test_temp/run/test_zipFile_24_cj_/test_zipFile_24.cj:18)
+[02-24 16:51:01] INFO - 11111111111111
+[02-24 16:51:01] INFO - ----------3
+[02-24 16:51:01] INFO - ----------4
+[02-24 16:51:01] INFO - ----------4: ZipStandardCipherOutputStream: -8613499875754022952
+[02-24 16:51:01] INFO - ----------4.1: Some(ZipStandardCipherOutputStream: -8613499875754022952)
+[02-24 16:51:01] INFO - ----------4.1.1: ZipStandardCipherOutputStream: -8613499875754022952, zip4cj.io.outputstream.ZipStandardCipherOutputStream
+[02-24 16:51:01] INFO - ----------4.2: true
+[02-24 16:51:01] INFO - ----------4.2.1: ZipStandardCipherOutputStream: -8613499875754022952, zip4cj.io.outputstream.ZipStandardCipherOutputStream
+[02-24 16:51:01] INFO - ----------6: ZipStandardCipherOutputStream: -8613499875754022952, random: -4226238729053600539
+[02-24 16:51:01] INFO - ----------5: ZipStandardCipherOutputStream: -8613499875754022952
+[02-24 16:51:01] INFO - 1-b: [49, 50, 51]
+[02-24 16:51:01] INFO - CompressedOutputStream.write: [49, 50, 51], cipherOutputStream class: ZipStandardCipherOutputStream: -8613499875754022952, random: -4226238729053600539
+[02-24 16:51:01] INFO - b: [49, 50, 51]
+[02-24 16:51:01] INFO - 2-b: [82, 229, 201]
+[02-24 16:51:02] INFO - return : 0
+[02-24 16:51:02] INFO -  >>=============================================<<当前进度0.62% 
+[02-24 16:51:02] INFO - 
+[02-24 16:51:02] INFO - 
+[02-24 16:51:02] INFO - 
+[02-24 16:51:02] INFO -   TestSuiteTask: Total: 1, PASS: 1, FAIL: 0, Ratio  : 100.0%

@@ -38,7 +38,7 @@ enum OUTPUT <: OutputStream & Resource {
 
 class DeflaterOutputStream <: CompressedOutputStream {
     var deflater: OUTPUT
-    public init(cipherOutputStream: ICipherOutputStream, compressionLevel: CompressionLevel, bufferSize: Int64) {
+    public init(cipherOutputStream: NoCipherOutputStream, compressionLevel: CompressionLevel, bufferSize: Int64) {
         super(cipherOutputStream)
         let level = Int64(compressionLevel.getLevel())
         this.deflater = if (level == 0) {
@@ -48,6 +48,25 @@ class DeflaterOutputStream <: CompressedOutputStream {
         }
     }
 
+    public init(cipherOutputStream: AesCipherOutputStream, compressionLevel: CompressionLevel, bufferSize: Int64) {
+        super(cipherOutputStream)
+        let level = Int64(compressionLevel.getLevel())
+        this.deflater = if (level == 0) {
+            OUTPUT.BUFFER(BufferedOutputStream<ICipherOutputStream>(cipherOutputStream))
+        } else {
+            OUTPUT.DEFLATE(Zlib4cjDeflaterOutputStream(cipherOutputStream, bufferSize: bufferSize, level: level))
+        }
+    }
+
+    public init(cipherOutputStream: ZipStandardCipherOutputStream, compressionLevel: CompressionLevel, bufferSize: Int64) {
+        super(cipherOutputStream)
+        let level = Int64(compressionLevel.getLevel())
+        this.deflater = if (level == 0) {
+            OUTPUT.BUFFER(BufferedOutputStream<ICipherOutputStream>(cipherOutputStream))
+        } else {
+            OUTPUT.DEFLATE(Zlib4cjDeflaterOutputStream(cipherOutputStream, bufferSize: bufferSize, level: level))
+        }
+    }
     public func write(b: Array<UInt8>): Unit {
         this.deflater.write(b)
     }

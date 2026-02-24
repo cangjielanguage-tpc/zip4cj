@@ -3,6 +3,8 @@
  */
 package zip4cj.io.outputstream
 
+import std.reflect.*
+
 func initializeZipModel(zipModel: ZipModel, countingOutputStream: CountingOutputStream): ZipModel {
     if (countingOutputStream.isSplitZipFile()) {
         zipModel.setSplitArchive(true)
@@ -67,7 +69,9 @@ public class ZipOutputStream <: OutputStream & Resource {
         this.checkCompressedOutputStream()
         ensureStreamOpen()
         crc32.update(b)
+        println("1-b: ${b}")
         compressedOutputStream.write(b)
+        println("2-b: ${b}")
         uncompressedSizeForThisEntry += b.size
     }
 
@@ -132,37 +136,94 @@ public class ZipOutputStream <: OutputStream & Resource {
 
     func initializeCompressedOutputStream(zipParameters: ZipParameters): CompressedOutputStream {
         var zipEntryOutputStream: ZipEntryOutputStream = ZipEntryOutputStream(this.countingOutputStream)
-        var cipherOutputStream: ICipherOutputStream = initializeCipherOutputStream(zipEntryOutputStream, zipParameters)
-        return initializeCompressedOutputStream(cipherOutputStream, zipParameters)
-    }
-
-    func initializeCipherOutputStream(zipEntryOutputStream: ZipEntryOutputStream, zipParameters: ZipParameters): ICipherOutputStream {
-        if (!zipParameters.isEncryptFiles()) {
-            return NoCipherOutputStream(zipEntryOutputStream, zipParameters, Array<Rune>())
-        }
+        println("11111111111111")
+        // var cipherOutputStream = initializeCipherOutputStream(zipEntryOutputStream, zipParameters)
+        // if (!zipParameters.isEncryptFiles()) {
+        //     println("----------2")
+        //     let noCipherOutputStream: NoCipherOutputStream = NoCipherOutputStream(zipEntryOutputStream, zipParameters, Array<Rune>())
+        //     if (zipParameters.getCompressionMethod() == CompressionMethod.DEFLATE) {
+        //         return DeflaterOutputStream(noCipherOutputStream, zipParameters.getCompressionLevel(),
+        //             zip4cjConfig.getBufferSize())
+        //     }
+        //     return StoreOutputStream(noCipherOutputStream)
+        // }
+        println("----------3")
         if (password.isNone() || password.getOrThrow().size == 0) {
             throw ZipException("password not set")
         }
         if (zipParameters.getEncryptionMethod() == EncryptionMethod.AES) {
-            return AesCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4cjConfig.isUseUtf8CharsetForPasswords())
-            // throw Exception(" not supported")
+            let aesCipherOutputStream: AesCipherOutputStream = AesCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4cjConfig.isUseUtf8CharsetForPasswords())
+            if (zipParameters.getCompressionMethod() == CompressionMethod.DEFLATE) {
+                return DeflaterOutputStream(aesCipherOutputStream, zipParameters.getCompressionLevel(),
+                    zip4cjConfig.getBufferSize())
+            }
+            return StoreOutputStream(aesCipherOutputStream)
         } else if (zipParameters.getEncryptionMethod() == EncryptionMethod.ZIP_STANDARD) {
-            return ZipStandardCipherOutputStream(zipEntryOutputStream, zipParameters, password.getOrThrow(),
+            println("----------4")
+            let zipStandardCipherOutputStream: ZipStandardCipherOutputStream = ZipStandardCipherOutputStream(zipEntryOutputStream, zipParameters, password.getOrThrow(),
                 zip4cjConfig.isUseUtf8CharsetForPasswords())
+            println("----------4: ${zipStandardCipherOutputStream.get123()}")
+            println("----------4.1: ${(zipStandardCipherOutputStream as ICipherOutputStream)?.get123()}")
+            let temp = (zipStandardCipherOutputStream as ICipherOutputStream).getOrThrow()
+            println("----------4.1.1: ${temp.get123()}, ${TypeInfo.of(temp)}")
+            println("----------4.2: ${refEq(zipStandardCipherOutputStream, temp)}")
+
+            let foo = (temp as ZipStandardCipherOutputStream).getOrThrow()
+            println("----------4.2.1: ${foo.get123()}, ${TypeInfo.of(foo)}")
+
+            if (zipParameters.getCompressionMethod() == CompressionMethod.DEFLATE) {
+                return DeflaterOutputStream(zipStandardCipherOutputStream, zipParameters.getCompressionLevel(),
+                    zip4cjConfig.getBufferSize())
+            }
+            return StoreOutputStream(zipStandardCipherOutputStream)
         } else if (zipParameters.getEncryptionMethod() == EncryptionMethod.ZIP_STANDARD_VARIANT_STRONG) {
             throw ZipException("ZIP_STANDARD_VARIANT_STRONG encryption method is not supported")
         } else {
             throw ZipException("Invalid encryption method")
         }
+
+        // println("initializeCompressedOutputStream: ${cipherOutputStream.getClassName()}")
+        // if (zipParameters.getCompressionMethod() == CompressionMethod.DEFLATE) {
+        //     return DeflaterOutputStream(cipherOutputStream, zipParameters.getCompressionLevel(),
+        //         zip4cjConfig.getBufferSize())
+        // }
+        // return StoreOutputStream(cipherOutputStream)
+        // return initializeCompressedOutputStream(cipherOutputStream, zipParameters)
     }
 
-    func initializeCompressedOutputStream(cipherOutputStream: ICipherOutputStream, zipParameters: ZipParameters): CompressedOutputStream {
-        if (zipParameters.getCompressionMethod() == CompressionMethod.DEFLATE) {
-            return DeflaterOutputStream(cipherOutputStream, zipParameters.getCompressionLevel(),
-                zip4cjConfig.getBufferSize())
-        }
-        return StoreOutputStream(cipherOutputStream)
-    }
+    // func initializeCipherOutputStream(zipEntryOutputStream: ZipEntryOutputStream, zipParameters: ZipParameters): ICipherOutputStream {
+    //     println("----------1")
+    //     if (!zipParameters.isEncryptFiles()) {
+    //         println("----------2")
+    //         return NoCipherOutputStream(zipEntryOutputStream, zipParameters, Array<Rune>())
+    //     }
+    //     println("----------3")
+    //     if (password.isNone() || password.getOrThrow().size == 0) {
+    //         throw ZipException("password not set")
+    //     }
+    //     if (zipParameters.getEncryptionMethod() == EncryptionMethod.AES) {
+    //         return AesCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4cjConfig.isUseUtf8CharsetForPasswords())
+    //         // throw Exception(" not supported")
+    //     } else if (zipParameters.getEncryptionMethod() == EncryptionMethod.ZIP_STANDARD) {
+    //         println("----------4")
+    //         let temp = ZipStandardCipherOutputStream(zipEntryOutputStream, zipParameters, password.getOrThrow(),
+    //             zip4cjConfig.isUseUtf8CharsetForPasswords())
+    //         println("----------4: ${temp.getClassName()}")
+    //         return temp
+    //     } else if (zipParameters.getEncryptionMethod() == EncryptionMethod.ZIP_STANDARD_VARIANT_STRONG) {
+    //         throw ZipException("ZIP_STANDARD_VARIANT_STRONG encryption method is not supported")
+    //     } else {
+    //         throw ZipException("Invalid encryption method")
+    //     }
+    // }
+
+    // func initializeCompressedOutputStream(cipherOutputStream: ICipherOutputStream, zipParameters: ZipParameters): CompressedOutputStream {
+    //     if (zipParameters.getCompressionMethod() == CompressionMethod.DEFLATE) {
+    //         return DeflaterOutputStream(cipherOutputStream, zipParameters.getCompressionLevel(),
+    //             zip4cjConfig.getBufferSize())
+    //     }
+    //     return StoreOutputStream(cipherOutputStream)
+    // }
 
     func verifyZipParameters(zipParameters: ZipParameters): Unit {
         if (Zip4cjUtil.isStringNullOrEmpty(zipParameters.getFileNameInZip())) {

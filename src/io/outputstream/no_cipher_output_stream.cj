@@ -17,11 +17,18 @@ class NoEncrypter <: Encrypter {
 }
 
 class NoCipherOutputStream <: CipherOutputStream<NoEncrypter> {
-    public init(zipEntryOutputStream: ZipEntryOutputStream, zipParameters: ZipParameters, password: ?Array<Rune>) {
-        super(zipEntryOutputStream, zipParameters, password, true)
-        this.encrypter = initializeEncrypter(zipEntryOutputStream, zipParameters, password, true)
+    var rrr: Int64
+    public func get123(): String {
+        Exception("NoCipherOutputStream getClassName ${rrr}").printStackTrace()
+        return "NoCipherOutputStream: ${rrr}"
     }
 
+    private init(zipEntryOutputStream: ZipEntryOutputStream, zipParameters: ZipParameters, password: ?Array<Rune>) {
+        super(zipEntryOutputStream, zipParameters, password, true)
+        rrr = random.nextInt64()
+        println("NoCipherOutputStream init: ${rrr}")
+        this.encrypter = initializeEncrypter(zipEntryOutputStream, zipParameters, password, true)
+    }
 
     protected func initializeEncrypter(
         outputStream: OutputStream,

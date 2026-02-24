@@ -4,12 +4,15 @@
 package zip4cj.io.outputstream
 
 open class CompressedOutputStream <: OutputStream & Resource {
-    private var cipherOutputStream: ICipherOutputStream
+    var random: Int64 = random.nextInt64()
+    private let cipherOutputStream: ICipherOutputStream
     public init(cipherOutputStream: ICipherOutputStream) {
         this.cipherOutputStream = cipherOutputStream
+        println("----------6: ${cipherOutputStream.get123()}, random: ${random}")
     }
 
     public open func write(b: Array<UInt8>): Unit {
+        println("CompressedOutputStream.write: ${b}, cipherOutputStream class: ${cipherOutputStream.get123()}, random: ${random}")
         cipherOutputStream.write(b)
     }
 
