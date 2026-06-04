@@ -43,7 +43,50 @@ abstract class CipherInputStream<T> <: ICipherInputStream where T <: Decrypter {
         var readLen = Zip4cjUtil.readFully(zipEntryInputStream, b, off, len)
         if (readLen > 0) {
             cacheRawData(b, readLen)
-            decrypter.decryptData(b[off..off+readLen])
+            // Print first few bytes before decryption
+            if (readLen > 0) {
+                var previewSize: Int64 = 16
+                if (readLen < 16) {
+                    previewSize = readLen
+                }
+                var preview = "Before decrypt: ["
+                for (i in off..off + previewSize) {
+                    preview += UInt32(UInt8(b[i])).toString()
+                    if (i < off + previewSize - 1) {
+                        preview += ","
+                    }
+                }
+                preview += "]"
+            }
+            
+            // Convert Array<Byte> to Array<UInt8> for decrypter
+            var uint8Buff = Array<UInt8>(readLen, repeat: 0)
+            for (i in 0..readLen) {
+                uint8Buff[i] = UInt8(b[off + i])
+            }
+            
+            decrypter.decryptData(uint8Buff)
+            
+            // Copy back to original array
+            for (i in 0..readLen) {
+                b[off + i] = UInt8(uint8Buff[i])
+            }
+            
+            // Print first few bytes after decryption
+            if (readLen > 0) {
+                var previewSize: Int64 = 16
+                if (readLen < 16) {
+                    previewSize = readLen
+                }
+                var preview = "After decrypt: ["
+                for (i in off..off + previewSize) {
+                    preview += UInt32(UInt8(b[i])).toString()
+                    if (i < off + previewSize - 1) {
+                        preview += ","
+                    }
+                }
+                preview += "]"
+            }
         }
         return readLen
     }

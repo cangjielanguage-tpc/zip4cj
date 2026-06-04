@@ -504,6 +504,20 @@ public class ZipFile <: Resource {
         if (!isNullzipModel) {
             return 
         }
+        
+        // 如果文件不存在，创建新的 ZipModel
+        if (!exists(zipFile)) {
+            createNewZipModel()
+            return
+        }
+        
+        // 检查文件大小，如果太小（小于最小 zip 头大小），视为新文件
+        var fileSize = FileInfo(zipFile).size
+        if (fileSize < 22) {  // 最小 zip 文件（只有 EOCD）至少 22 字节
+            createNewZipModel()
+            return
+        }
+        
         try (randomAccessFile = initializeRandomAccessFileForHeaderReading(zipFile)) {
             var headerReader = HeaderReader()
             this.zipModelOpt = headerReader.readAllHeaders(randomAccessFile, buildConfig())

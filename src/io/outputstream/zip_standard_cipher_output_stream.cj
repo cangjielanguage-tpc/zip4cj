@@ -31,7 +31,7 @@ class ZipStandardCipherOutputStream <: CipherOutputStream<StandardEncrypter> {
         return encrypter
     }
 
-    public func write(b: Array<UInt8>): Unit {
+    public override func write(b: Array<UInt8>): Unit {
         super.write(b)
     }
 

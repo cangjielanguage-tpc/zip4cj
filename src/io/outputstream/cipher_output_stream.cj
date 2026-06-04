@@ -45,7 +45,40 @@ abstract class CipherOutputStream<T> <: ICipherOutputStream where T <: Encrypter
     ): T 
 
     public open func write(b: Array<UInt8>): Unit {
+        // Print first few bytes before encryption
+        if (b.size > 0) {
+            var previewSize: Int64 = 16
+            if (b.size < 16) {
+                previewSize = b.size
+            }
+            var preview = "Before encrypt: ["
+            for (i in 0..previewSize) {
+                preview += UInt32(b[i]).toString()
+                if (i < previewSize - 1) {
+                    preview += ","
+                }
+            }
+            preview += "]"
+        }
+        
         encrypter.encryptData(b)
+        
+        // Print first few bytes after encryption
+        if (b.size > 0) {
+            var previewSize: Int64 = 16
+            if (b.size < 16) {
+                previewSize = b.size
+            }
+            var preview = "After encrypt: ["
+            for (i in 0..previewSize) {
+                preview += UInt32(b[i]).toString()
+                if (i < previewSize - 1) {
+                    preview += ","
+                }
+            }
+            preview += "]"
+        }
+        
         this.outputStream.write(b)
     }
 

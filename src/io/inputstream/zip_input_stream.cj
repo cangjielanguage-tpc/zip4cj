@@ -117,6 +117,9 @@ public class ZipInputStream <: InputStream & Resource {
             return
         }
         decompressedInputStream?.close()
+        // Here we fix the bug where the input stream is not completely closed. 
+        // The corresponding issues can be found in Cangjie TPC/zip4cj/issues/27
+        inputStream.close() 
         this.streamClosed = true
     }
 
@@ -224,16 +227,22 @@ public class ZipInputStream <: InputStream & Resource {
 
         if (localFileHeader.getOrThrow().getCrc() != Int64(crc32.getValue())) {
             var exceptionType = ZipExceptionType.CHECKSUM_MISMATCH
+            var errorMessage = "Reached end of entry, but crc verification failed for " +
+                localFileHeader.getOrThrow().getFileName().getOrThrow()
 
             if (isEncryptionMethodZipStandard(localFileHeader.getOrThrow())) {
                 exceptionType = ZipExceptionType.WRONG_PASSWORD
+                // Add helpful hint about password encoding issues
+                errorMessage += "\nPossible causes:\n" +
+                    "1. Wrong password\n" +
+                    "2. Password encoding mismatch (this zip file may have been created with a different charset encoding)\n" +
+                    "   - If password contains special characters (e.g., Chinese punctuation, symbols), " +
+                    "ensure the same charset encoding is used during both compression and extraction\n" +
+                    "   - Recommended: Use UTF-8 encoding for passwords (ZipParameters.setUseUtf8CharsetForPasswordEncoding(true))\n" +
+                    "   - Check system locale settings: ensure LANG/LC_ALL environment variables are set to UTF-8 locale"
             }
 
-            throw ZipException(
-                "Reached end of entry, but crc verification failed for " +
-                    localFileHeader.getOrThrow().getFileName().getOrThrow(),
-                exceptionType
-            )
+            throw ZipException(errorMessage, exceptionType)
         }
     }
 
