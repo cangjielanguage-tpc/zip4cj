@@ -145,20 +145,101 @@ public class Zip4cjUtil {
     }
 
     private static func convertCharArrayToByteArrayUsingUtf8(charArray: Array<Rune>): Array<Byte> {
-        try {
-            return String(charArray).toArray()
-        } catch (e: Exception) {
-            return convertCharArrayToByteArrayUsingDefaultCharset(charArray)
+        // Manually encode runes to UTF-8 bytes to ensure consistency across different environments
+        // This avoids relying on String.toArray() which may be affected by locale settings
+        // First pass: calculate total bytes needed
+        var totalBytes = 0
+        for (i in 0..charArray.size) {
+            let codePoint = UInt32(charArray[i])
+            if (codePoint < 0x80) {
+                totalBytes += 1
+            } else if (codePoint < 0x800) {
+                totalBytes += 2
+            } else if (codePoint < 0x10000) {
+                totalBytes += 3
+            } else if (codePoint < 0x110000) {
+                totalBytes += 4
+            }
         }
+        
+        // Second pass: encode to UTF-8 bytes
+        var utf8Bytes = Array<Byte>(totalBytes, repeat: 0)
+        var index = 0
+        for (i in 0..charArray.size) {
+            let codePoint = UInt32(charArray[i])
+            if (codePoint < 0x80) {
+                // ASCII: 0xxxxxxx (1 byte)
+                utf8Bytes[index] = UInt8(codePoint)
+                index += 1
+            } else if (codePoint < 0x800) {
+                // 2-byte sequence: 110xxxxx 10xxxxxx
+                utf8Bytes[index] = UInt8(0xC0 | ((codePoint >> 6) & 0x1F))
+                utf8Bytes[index + 1] = UInt8(0x80 | (codePoint & 0x3F))
+                index += 2
+            } else if (codePoint < 0x10000) {
+                // 3-byte sequence: 1110xxxx 10xxxxxx 10xxxxxx
+                utf8Bytes[index] = UInt8(0xE0 | ((codePoint >> 12) & 0x0F))
+                utf8Bytes[index + 1] = UInt8(0x80 | ((codePoint >> 6) & 0x3F))
+                utf8Bytes[index + 2] = UInt8(0x80 | (codePoint & 0x3F))
+                index += 3
+            } else if (codePoint < 0x110000) {
+                // 4-byte sequence: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+                utf8Bytes[index] = UInt8(0xF0 | ((codePoint >> 18) & 0x07))
+                utf8Bytes[index + 1] = UInt8(0x80 | ((codePoint >> 12) & 0x3F))
+                utf8Bytes[index + 2] = UInt8(0x80 | ((codePoint >> 6) & 0x3F))
+                utf8Bytes[index + 3] = UInt8(0x80 | (codePoint & 0x3F))
+                index += 4
+            }
+            // Invalid code points are silently ignored
+        }
+        return utf8Bytes
     }
 
     @OverflowWrapping
     private static func convertCharArrayToByteArrayUsingDefaultCharset(charArray: Array<Rune>): Array<Byte> {
-        var bytes: Array<Byte> = Array<Byte>(charArray.size, repeat: 0)
+        // For default charset, we still use UTF-8 encoding to ensure consistency
+        // This is critical for password encoding in ZIP encryption
+        // First pass: calculate total bytes needed
+        var totalBytes = 0
         for (i in 0..charArray.size) {
-            bytes[i] = UInt8(UInt32(charArray[i]))
+            let codePoint = UInt32(charArray[i])
+            if (codePoint < 0x80) {
+                totalBytes += 1
+            } else if (codePoint < 0x800) {
+                totalBytes += 2
+            } else if (codePoint < 0x10000) {
+                totalBytes += 3
+            } else if (codePoint < 0x110000) {
+                totalBytes += 4
+            }
         }
-        return bytes
+        
+        // Second pass: encode to UTF-8 bytes
+        var utf8Bytes = Array<Byte>(totalBytes, repeat: 0)
+        var index = 0
+        for (i in 0..charArray.size) {
+            let codePoint = UInt32(charArray[i])
+            if (codePoint < 0x80) {
+                utf8Bytes[index] = UInt8(codePoint)
+                index += 1
+            } else if (codePoint < 0x800) {
+                utf8Bytes[index] = UInt8(0xC0 | ((codePoint >> 6) & 0x1F))
+                utf8Bytes[index + 1] = UInt8(0x80 | (codePoint & 0x3F))
+                index += 2
+            } else if (codePoint < 0x10000) {
+                utf8Bytes[index] = UInt8(0xE0 | ((codePoint >> 12) & 0x0F))
+                utf8Bytes[index + 1] = UInt8(0x80 | ((codePoint >> 6) & 0x3F))
+                utf8Bytes[index + 2] = UInt8(0x80 | (codePoint & 0x3F))
+                index += 3
+            } else if (codePoint < 0x110000) {
+                utf8Bytes[index] = UInt8(0xF0 | ((codePoint >> 18) & 0x07))
+                utf8Bytes[index + 1] = UInt8(0x80 | ((codePoint >> 12) & 0x3F))
+                utf8Bytes[index + 2] = UInt8(0x80 | ((codePoint >> 6) & 0x3F))
+                utf8Bytes[index + 3] = UInt8(0x80 | (codePoint & 0x3F))
+                index += 4
+            }
+        }
+        return utf8Bytes
     }
 }
 

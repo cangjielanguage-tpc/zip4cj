@@ -96,21 +96,26 @@ public abstract class AbstractAddFileToZipTask<T> <: AsyncZipTask<T> {
         readBuff: Array<Byte>
     ) {
         zipOutputStream.putNextEntry(zipParameters)
+        
         let isDirectory = if (fileToAdd.isSymbolicLink()) {
             FileInfo(SymbolicLink.readFrom(fileToAdd.path, recursive: true)).isDirectory()
         } else {
             fileToAdd.isDirectory()
         }
+        
         if (!isDirectory) {
             try (inputStream = File(fileToAdd.path, OpenMode.Read)){
                 var readLen = inputStream.read(readBuff)
+                var totalWritten = 0
                 while (readLen > 0) {
                     zipOutputStream.write(readBuff[0..readLen])
+                    totalWritten += readLen
                     progressMonitor.updateWorkCompleted(readLen)
                     verifyIfTaskIsCancelled()
                     readLen = inputStream.read(readBuff)
                 }
             }
+        } else {
         }
         closeEntry(zipOutputStream, splitOutputStream, fileToAdd, false)
     }

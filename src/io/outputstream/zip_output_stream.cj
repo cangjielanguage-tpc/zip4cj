@@ -143,6 +143,7 @@ public class ZipOutputStream <: OutputStream & Resource {
         if (password.isNone() || password.getOrThrow().size == 0) {
             throw ZipException("password not set")
         }
+        
         if (zipParameters.getEncryptionMethod() == EncryptionMethod.AES) {
             return AesCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4cjConfig.isUseUtf8CharsetForPasswords())
             // throw Exception(" not supported")
