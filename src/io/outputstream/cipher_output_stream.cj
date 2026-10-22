@@ -10,20 +10,26 @@ abstract class ICipherOutputStream <: OutputStream & Resource {
     public func writeHeaders(b: Array<UInt8>): Unit
 
     public func closeEntry(): Unit
-    
+
     public func close(): Unit
 
     public func isClosed(): Bool
 
-    public func getNumberOfBytesWrittenForThisEntry(): Int64 
+    public func getNumberOfBytesWrittenForThisEntry(): Int64
 }
 
-abstract class CipherOutputStream<T> <: ICipherOutputStream where T <: Encrypter {
+// NOTE: this class must NOT be generic. cjc (release/-O2, dynamic library)
+// mis-binds the reified specialization CipherOutputStream<G>.write for
+// cross-package type arguments to the same-package NoEncrypter
+// specialization, which silently skips encryption of entry data
+// (see test_zipFile_24 pipeline failure). Keeping `encrypter` as a plain
+// Encrypter interface reference avoids reified specialization entirely.
+abstract class CipherOutputStream <: ICipherOutputStream {
     protected var outputStream: ZipEntryOutputStream
     protected var zipParameters: ZipParameters
     protected var password: ?Array<Rune>
     protected var useUtf8ForPassword: Bool
-    protected var encrypter: T = unsafe { zeroValue<T>() }
+    protected var encrypter: ?Encrypter = None
     var closed = false
     public init(
         zipEntryOutputStream: ZipEntryOutputStream,
@@ -37,48 +43,11 @@ abstract class CipherOutputStream<T> <: ICipherOutputStream where T <: Encrypter
         this.useUtf8ForPassword = useUtf8ForPassword
     }
 
-    protected func initializeEncrypter(
-        outputStream: OutputStream,
-        zipParameters: ZipParameters,
-        password: ?Array<Rune>,
-        useUtf8ForPassword: Bool
-    ): T 
-
     public open func write(b: Array<UInt8>): Unit {
-        // Print first few bytes before encryption
-        if (b.size > 0) {
-            var previewSize: Int64 = 16
-            if (b.size < 16) {
-                previewSize = b.size
-            }
-            var preview = "Before encrypt: ["
-            for (i in 0..previewSize) {
-                preview += UInt32(b[i]).toString()
-                if (i < previewSize - 1) {
-                    preview += ","
-                }
-            }
-            preview += "]"
+        match (encrypter) {
+            case Some(e) => e.encryptData(b)
+            case None => throw ZipException("encrypter is not initialized")
         }
-        
-        encrypter.encryptData(b)
-        
-        // Print first few bytes after encryption
-        if (b.size > 0) {
-            var previewSize: Int64 = 16
-            if (b.size < 16) {
-                previewSize = b.size
-            }
-            var preview = "After encrypt: ["
-            for (i in 0..previewSize) {
-                preview += UInt32(b[i]).toString()
-                if (i < previewSize - 1) {
-                    preview += ","
-                }
-            }
-            preview += "]"
-        }
-        
         this.outputStream.write(b)
     }
 
@@ -96,7 +65,7 @@ abstract class CipherOutputStream<T> <: ICipherOutputStream where T <: Encrypter
     }
 
     public open func isClosed(): Bool {
-        if (let Some(v) <- (outputStream as Resource)){
+        if (let Some(v) <- (outputStream as Resource)) {
             v.isClosed()
         } else {
             closed
@@ -105,10 +74,6 @@ abstract class CipherOutputStream<T> <: ICipherOutputStream where T <: Encrypter
 
     public open func getNumberOfBytesWrittenForThisEntry(): Int64 {
         return this.outputStream.getNumberOfBytesWrittenForThisEntry()
-    }
-
-    protected open func getEncrypter(): T {
-        return encrypter
     }
 
     public open func flush(): Unit {

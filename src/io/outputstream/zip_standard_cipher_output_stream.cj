@@ -3,7 +3,7 @@
  */
 package zip4cj.io.outputstream
 
-class ZipStandardCipherOutputStream <: CipherOutputStream<StandardEncrypter> {
+class ZipStandardCipherOutputStream <: CipherOutputStream {
     private var pendingBuffer: Array<UInt8> = Array<UInt8>(16, repeat: 0)
 
     private var pendingBufferLength: Int32 = 0
@@ -15,20 +15,13 @@ class ZipStandardCipherOutputStream <: CipherOutputStream<StandardEncrypter> {
         useUtf8ForPassword: Bool
     ) {
         super(outputStream, zipParameters, password, useUtf8ForPassword)
-        this.encrypter = initializeEncrypter(outputStream, zipParameters, password, useUtf8ForPassword)
-    }
-
-    protected override func initializeEncrypter(
-        outputStream: OutputStream,
-        zipParameters: ZipParameters,
-        password: ?Array<Rune>,
-        useUtf8ForPassword: Bool
-    ): StandardEncrypter {
-        outputStream
+        if (password.isNone()) {
+            throw ZipException("input password is null")
+        }
         var key: Int64 = getEncryptionKey(zipParameters)
         var encrypter: StandardEncrypter = StandardEncrypter(password, key, useUtf8ForPassword)
+        this.encrypter = encrypter
         writeHeaders(encrypter.getHeaderBytes())
-        return encrypter
     }
 
     public override func write(b: Array<UInt8>): Unit {

@@ -3,33 +3,28 @@
  */
 package zip4cj.io.outputstream
 
-class AesCipherOutputStream <: CipherOutputStream<AESEncrypter> {
+class AesCipherOutputStream <: CipherOutputStream {
 
     private var pendingBuffer = Array<Byte>(InternalZipConstants.AES_BLOCK_SIZE, repeat: 0)
     private var pendingBufferLength = 0
+    private var aesEncrypter: AESEncrypter
 
     public init(outputStream: ZipEntryOutputStream,
                 zipParameters: ZipParameters,
                 password: ?Array<Rune>,
                 useUtf8ForPassword: Bool){
         super(outputStream, zipParameters, password, useUtf8ForPassword)
-        this.encrypter = initializeEncrypter(outputStream, zipParameters, password, useUtf8ForPassword)
-    }
-
-    protected override func initializeEncrypter(outputStream: OutputStream,
-                                                zipParameters: ZipParameters,
-                                                password: ?Array<Rune>,
-                                                useUtf8ForPassword: Bool) : AESEncrypter {
         if (password.isNone()) {
             throw ZipException("input password is null")
         }
-        let encrypter: AESEncrypter  = AESEncrypter(password.getOrThrow(), zipParameters.getAesKeyStrength(), useUtf8ForPassword)
+        let encrypter: AESEncrypter = AESEncrypter(password.getOrThrow(), zipParameters.getAesKeyStrength(), useUtf8ForPassword)
+        this.aesEncrypter = encrypter
+        this.encrypter = encrypter
         this.writeAesEncryptionHeaderData(encrypter)
-        return encrypter
     }
 
     private func writeAesEncryptionHeaderData(encrypter: AESEncrypter): Unit{
-        let saltBytes =encrypter.getSaltBytes()
+        let saltBytes = encrypter.getSaltBytes()
         writeHeaders(saltBytes)
         let derivedPasswordVerifier = encrypter.getDerivedPasswordVerifier()
         writeHeaders(derivedPasswordVerifier)
@@ -46,14 +41,12 @@ class AesCipherOutputStream <: CipherOutputStream<AESEncrypter> {
             pendingBufferLength = 0
         } else {
             b.copyTo(pendingBuffer, off, pendingBufferLength, len)
-            // System.arraycopy(b, off, pendingBuffer, pendingBufferLength, len)
             pendingBufferLength += len
             return
         }
 
         if (len != 0 && len % 16 != 0) {
             b.copyTo(pendingBuffer, (len + off) - (len % 16), 0, len % 16)
-            // System.arraycopy(b, (len + off) - (len % 16), pendingBuffer, 0, len % 16)
             pendingBufferLength = len % 16
             len = len - pendingBufferLength
         }
@@ -66,7 +59,7 @@ class AesCipherOutputStream <: CipherOutputStream<AESEncrypter> {
             pendingBufferLength = 0
         }
 
-        writeHeaders((getEncrypter() as AESEncrypter).getOrThrow().getFinalMac())
+        writeHeaders(aesEncrypter.getFinalMac())
         super.closeEntry()
     }
 }

@@ -212,13 +212,23 @@ public class FileUtils {
                 if (!rootFolderFileRef.endsWith(Path.Separator)) {
                     rootFolderFileRef = "${rootFolderFileRef}${Path.Separator}"
                 }
-                var tmpFileName: String = if (FileInfo(fileToAdd).isSymbolicLink()) {
-                    var rootPath = "${canonicalize(fileToAdd.parent)}${Path.Separator}${canonicalize(fileToAdd).fileName}"
-                    unsafe { String.fromUtf8Unchecked(rootPath.toArray()[rootFolderFileRef.size..])}
+                let fileToAddInfo = FileInfo(fileToAdd)
+                var tmpFileName: String = if (fileToAddInfo.isSymbolicLink()) {
+                    // 符号链接: 基于链接自身名字与其父目录构造条目名, 不解析链接目标,
+                    // 否则目录链接会被错误放入其目标目录之下(如 sym_root/a/b 而非 sym_root/b)
+                    var rootPath = "${canonicalize(fileToAdd.parent)}${Path.Separator}${fileToAdd.fileName}"
+                    if (rootPath.startsWith(rootFolderFileRef)) {
+                        String.fromUtf8(rootPath.toArray()[rootFolderFileRef.size..])
+                    } else {
+                        // 链接不在根目录之下: 与普通文件分支语义一致, 使用父目录名 + 分隔符 + 链接名,
+                        // 避免 rootFolderFileRef.size 起始下标越界
+                        "${canonicalize(fileToAdd.parent).fileName}${Path.Separator}${fileToAdd.fileName}"
+                    }
                 } else {
                     let canonicalizeFileToAdd = canonicalize(fileToAdd)
                     if (!canonicalizeFileToAdd.toString().startsWith(rootFolderFileRef)) {
-                        "${canonicalizeFileToAdd.parent}${Path.Separator}${canonicalizeFileToAdd}"
+                        // 与 zip4j 对齐: 使用父目录名 + 分隔符 + 文件名, 而非完整路径
+                        "${canonicalizeFileToAdd.parent.fileName}${Path.Separator}${canonicalizeFileToAdd.fileName}"
                     } else {
                         unsafe { String.fromUtf8Unchecked(fileCanonicalPath.toString().toArray()[rootFolderFileRef.size..]) }
                     }
@@ -230,17 +240,21 @@ public class FileUtils {
 
                 var tmpFile = fileCanonicalPath
 
-                if (FileInfo(tmpFile).isDirectory()) {
-                    tmpFileName = "${tmpFileName.replace("\\\\", InternalZipConstants.ZIP_FILE_SEPARATOR)}${InternalZipConstants.ZIP_FILE_SEPARATOR}"
-                } else {
-                    let bkFileName = unsafe {
-                        String.fromUtf8Unchecked(
-                            tmpFileName.toArray()[0..tmpFileName.lastIndexOf(tmpFile.fileName).getOrThrow()]
-                    )}
-                    tmpFileName = "${bkFileName.replace("\\\\", InternalZipConstants.ZIP_FILE_SEPARATOR)}${getNameOfFileInZip(tmpFile, zipParameters.getFileNameInZip())}"
+                if (!fileToAddInfo.isSymbolicLink()) {
+                    if (FileInfo(tmpFile).isDirectory()) {
+                        tmpFileName = "${tmpFileName.replace("\\\\", InternalZipConstants.ZIP_FILE_SEPARATOR)}${InternalZipConstants.ZIP_FILE_SEPARATOR}"
+                    } else {
+                        let bkFileName = unsafe {
+                            String.fromUtf8Unchecked(
+                                tmpFileName.toArray()[0..tmpFileName.lastIndexOf(tmpFile.fileName).getOrThrow()]
+                        )}
+                        tmpFileName = "${bkFileName.replace("\\\\", InternalZipConstants.ZIP_FILE_SEPARATOR)}${getNameOfFileInZip(tmpFile, zipParameters.getFileNameInZip())}"
+                    }
                 }
 
-                fileName = tmpFileName
+                // 符号链接: fileCanonicalPath 已解析为链接目标, 目标的目录/文件属性与链接条目无关,
+                // 跳过上方后处理(目录链接会因追加分隔符导致条目错位), 仅做分隔符归一化
+                fileName = tmpFileName.replace("\\\\", InternalZipConstants.ZIP_FILE_SEPARATOR)
             } else {
                 fileName = getNameOfFileInZip(fileToAdd, zipParameters.getFileNameInZip())
                 if (FileInfo(fileToAdd).isDirectory()) {
