@@ -16,19 +16,9 @@ class NoEncrypter <: Encrypter {
     }
 }
 
-class NoCipherOutputStream <: CipherOutputStream<NoEncrypter> {
+class NoCipherOutputStream <: CipherOutputStream {
     public init(zipEntryOutputStream: ZipEntryOutputStream, zipParameters: ZipParameters, password: ?Array<Rune>) {
         super(zipEntryOutputStream, zipParameters, password, true)
-        this.encrypter = initializeEncrypter(zipEntryOutputStream, zipParameters, password, true)
-    }
-
-
-    protected func initializeEncrypter(
-        outputStream: OutputStream,
-        zipParameters: ZipParameters,
-        password: ?Array<Rune>,
-        useUtf8ForPassword: Bool
-    ): NoEncrypter {
-        NoEncrypter.INSTANCE
+        this.encrypter = NoEncrypter.INSTANCE
     }
 }

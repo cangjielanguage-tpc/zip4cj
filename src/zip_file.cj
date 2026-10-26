@@ -511,13 +511,8 @@ public class ZipFile <: Resource {
             return
         }
         
-        // 检查文件大小，如果太小（小于最小 zip 头大小），视为新文件
-        var fileSize = FileInfo(zipFile).size
-        if (fileSize < 22) {  // 最小 zip 文件（只有 EOCD）至少 22 字节
-            createNewZipModel()
-            return
-        }
-        
+        // 文件大小校验由 HeaderReader.readAllHeaders 统一裁决:
+        // 0 字节视为空 zip 返回空 ZipModel(与 zip4j 2.11.6+ 对齐), 小于 ENDHDR(22) 字节抛异常
         try (randomAccessFile = initializeRandomAccessFileForHeaderReading(zipFile)) {
             var headerReader = HeaderReader()
             this.zipModelOpt = headerReader.readAllHeaders(randomAccessFile, buildConfig())
