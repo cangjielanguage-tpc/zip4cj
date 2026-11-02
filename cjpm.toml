@@ -22,9 +22,8 @@
     [target.aarch64-apple-darwin.bin-dependencies]
       path-option = [ "${CANGJIE_STDX_PATH}/darwin_aarch64_cjnative/dynamic/stdx" ]
 [dependencies]
-  [dependencies.zlib4cj]
-    git = "https://gitcode.com/Cangjie-TPC/zlib4cj.git"
-    branch = "v1.2.0"
+  zlib4cj = {tag = "v1.3.0", git = "https://gitcode.com/Cangjie-TPC/zlib4cj.git"}
+
 [package]
   cjc-version = "1.2.0"
   compile-option = ""
@@ -34,7 +33,7 @@
   output-type = "dynamic"
   src-dir = "src"
   target-dir = ""
-  version = "1.0.8"
+  version = "1.0.9"
   package-configuration = {}
   scripts = {}
 
